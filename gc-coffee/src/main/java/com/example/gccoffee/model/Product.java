@@ -1,11 +1,10 @@
 package com.example.gccoffee.model;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 public class Product {
 
-    private final UUID productId;
+    private final Long productId;
     private String productName;
     private Category category;
     private long price;
@@ -13,7 +12,7 @@ public class Product {
     private final LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public Product(UUID productId,
+    public Product(Long productId,
                    String productName,
                    Category category,
                    long price,
@@ -29,7 +28,7 @@ public class Product {
         this.updatedAt = updatedAt;
     }
 
-    public Product(UUID productId, String productName, Category category, long price) {
+    public Product(Long productId, String productName, Category category, long price) {
         this.productId = productId;
         this.productName = productName;
         this.category = category;
@@ -38,7 +37,7 @@ public class Product {
         this.updatedAt = LocalDateTime.now();
     }
 
-    public UUID getProductId() {
+    public Long getProductId() {
         return productId;
     }
 
