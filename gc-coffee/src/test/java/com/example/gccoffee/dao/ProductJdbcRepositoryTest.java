@@ -11,6 +11,7 @@ import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,16 +22,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @SpringBootTest(classes = {TestJdbcConfig.class, ProductJdbcRepository.class})
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@Transactional
 @ActiveProfiles("test")
 class ProductJdbcRepositoryTest {
 
     static EmbeddedMysql embeddedMysql;
+    private final Product newProduct = new Product(0L, "new-product", Category.COFFEE_BEAN_PACKAGE, 1000L);
 
     @Autowired
     ProductRepository repository;
-
-    private final Product newProduct = new Product(0L, "new-product", Category.COFFEE_BEAN_PACKAGE, 1000L);
 
     @BeforeAll
     static void setup() {
@@ -45,19 +45,14 @@ class ProductJdbcRepositoryTest {
                 .start();
     }
 
-    @BeforeEach
-    void init() {
-        repository.insert(newProduct);
-    }
-
-    @AfterEach
-    void destroy() {
-        repository.deleteAll();
-    }
-
     @AfterAll
     static void cleanup() {
         embeddedMysql.stop();
+    }
+
+    @BeforeEach
+    void init() {
+        repository.insert(newProduct);
     }
 
     @Test
