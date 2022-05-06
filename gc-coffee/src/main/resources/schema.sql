@@ -5,8 +5,8 @@ CREATE TABLE products
     category     VARCHAR(50) NOT NULL,
     price        bigint      NOT NULL,
     description  VARCHAR(500) DEFAULT NULL,
-    created_at   datetime(6) NOT NULL,
-    updated_at   datetime(6)  NOT NULL
+    created_at   datetime(6) DEFAULT NOW(6),
+    updated_at   datetime(6)  DEFAULT NOW(6)
 );
 
 CREATE TABLE orders
@@ -16,8 +16,8 @@ CREATE TABLE orders
     address      VARCHAR(200) NOT NULL,
     postcode     VARCHAR(200) NOT NULL,
     order_status VARCHAR(50)  NOT NULL,
-    created_at   datetime(6)  NOT NULL,
-    updated_at   datetime(6) DEFAULT NULL
+    created_at   datetime(6) DEFAULT NOW(6),
+    updated_at   datetime(6)  DEFAULT NOW(6)
 );
 
 CREATE TABLE order_items
@@ -28,8 +28,8 @@ CREATE TABLE order_items
     category   VARCHAR(50) NOT NULL,
     price      bigint      NOT NULL,
     quantity   int         NOT NULL,
-    created_at datetime(6) NOT NULL,
-    updated_at datetime(6) DEFAULT NULL,
+    created_at   datetime(6) DEFAULT NOW(6),
+    updated_at   datetime(6)  DEFAULT NOW(6),
     INDEX (order_id),
     CONSTRAINT fk_order_items_to_order FOREIGN KEY (order_id) REFERENCES orders (order_id) ON DELETE CASCADE,
     CONSTRAINT fk_order_items_to_product FOREIGN KEY (product_id) REFERENCES products (product_id)
