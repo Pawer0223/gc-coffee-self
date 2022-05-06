@@ -25,7 +25,6 @@ CREATE TABLE order_items
     seq        bigint      NOT NULL PRIMARY KEY AUTO_INCREMENT,
     order_id   bigint  NOT NULL,
     product_id bigint  NOT NULL,
-    category   VARCHAR(50) NOT NULL,
     price      bigint      NOT NULL,
     quantity   int         NOT NULL,
     created_at   datetime(6) DEFAULT NOW(6),

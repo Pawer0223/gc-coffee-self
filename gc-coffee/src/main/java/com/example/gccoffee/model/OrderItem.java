@@ -2,13 +2,11 @@ package com.example.gccoffee.model;
 
 public class OrderItem {
     private final Long productId;
-    private final Category category;
-    private final long price;
-    private final int quantity;
+    private final Long price;
+    private final Integer quantity;
 
-    public OrderItem(Long productId, Category category, long price, int quantity) {
+    public OrderItem(Long productId, Long price, int quantity) {
         this.productId = productId;
-        this.category = category;
         this.price = price;
         this.quantity = quantity;
     }
@@ -17,15 +15,11 @@ public class OrderItem {
         return productId;
     }
 
-    public Category getCategory() {
-        return category;
-    }
-
-    public long getPrice() {
+    public Long getPrice() {
         return price;
     }
 
-    public int getQuantity() {
+    public Integer getQuantity() {
         return quantity;
     }
 }
