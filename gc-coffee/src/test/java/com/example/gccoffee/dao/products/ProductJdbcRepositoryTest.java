@@ -1,5 +1,10 @@
-package com.example.gccoffee.dao;
+package com.example.gccoffee.dao.products;
 
+import com.example.gccoffee.config.TestJdbcConfig;
+import com.example.gccoffee.dao.products.ProductJdbcRepository;
+import com.example.gccoffee.dao.products.ProductRepository;
+import com.example.gccoffee.dto.CreateProductDto;
+import com.example.gccoffee.dto.UpdateProductDto;
 import com.example.gccoffee.model.Category;
 import com.example.gccoffee.model.Product;
 import com.wix.mysql.EmbeddedMysql;
@@ -27,7 +32,8 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 class ProductJdbcRepositoryTest {
 
     static EmbeddedMysql embeddedMysql;
-    private final Product newProduct = new Product(0L, "new-product", Category.COFFEE_BEAN_PACKAGE, 1000L);
+    private final CreateProductDto createProductDto = new CreateProductDto( "init-product", Category.COFFEE_BEAN_PACKAGE, 1000L, "DESC");
+    private Long initInsertedId = 1L;
 
     @Autowired
     ProductRepository repository;
@@ -52,41 +58,54 @@ class ProductJdbcRepositoryTest {
 
     @BeforeEach
     void init() {
-        repository.insert(newProduct);
+        initInsertedId = repository.insert(createProductDto);
     }
 
     @Test
     @DisplayName("상품을 추가할 수 있다.")
     void testInsert() {
-        Product newProduct2 = new Product(0L, "new-product2", Category.COFFEE_BEAN_PACKAGE, 2000L);
-        repository.insert(newProduct2);
+        CreateProductDto createProductDto2 = new CreateProductDto( "new-product2", Category.COFFEE_BEAN_PACKAGE, 1000L, "DESC2");
+        Long insertedId = repository.insert(createProductDto2);
+
+        Optional<Product> product = repository.findById(insertedId);
+        assertThat(product.isEmpty()).isFalse();
+    }
+
+    @Test
+    @DisplayName("상품을 전체 조회할 수 있다.")
+    void testFindAll() {
+        for (int i = 1; i <= 5; i++) {
+            String name = "new-product" + i;
+            CreateProductDto newProduct = new CreateProductDto( "new-product2", Category.COFFEE_BEAN_PACKAGE, 1000L, "DESC");
+            repository.insert(newProduct);
+        }
+
         List<Product> products = repository.findAll();
         assertAll(
                 () -> assertThat(products.isEmpty()).isFalse(),
-                () -> assertThat(products.size()).isEqualTo(2)
+                () -> assertThat(products.size()).isEqualTo(6)
         );
     }
 
     @Test
     @DisplayName("상품을 이름으로 조회할 수 있다.")
     void testFindByName() {
-        Optional<Product> product = repository.findByName(newProduct.getProductName());
+        Optional<Product> product = repository.findByName(createProductDto.getProductName());
 
         assertAll(
                 () -> assertThat(product.isEmpty()).isFalse(),
-                () -> assertThat(product.get().getProductName()).isEqualTo(newProduct.getProductName())
+                () -> assertThat(product.get().getProductName()).isEqualTo(createProductDto.getProductName())
         );
     }
 
     @Test
     @DisplayName("상품을 아이디로 조회할 수 있다.")
     void testFindById() {
-        Long productId = repository.findAll().get(0).getProductId();
-        Optional<Product> product = repository.findById(productId);
+        Optional<Product> product = repository.findById(initInsertedId);
 
         assertAll(
                 () -> assertThat(product.isEmpty()).isFalse(),
-                 () -> assertThat(product.get().getProductId()).isEqualTo(productId)
+                () -> assertThat(product.get().getProductId()).isEqualTo(initInsertedId)
         );
     }
 
@@ -97,7 +116,7 @@ class ProductJdbcRepositoryTest {
 
         assertAll(
                 () -> assertThat(products.isEmpty()).isFalse(),
-                () -> assertThat(products.get(0).getCategory()).isEqualTo(newProduct.getCategory())
+                () -> assertThat(products.get(0).getCategory()).isEqualTo(createProductDto.getCategory())
         );
     }
 
@@ -105,23 +124,19 @@ class ProductJdbcRepositoryTest {
     @DisplayName("상품을 수정할 수 있다.")
     void testUpdate() {
         String updateName = "updated-product";
-        newProduct.setProductName(updateName);
-        Long productId = repository.findAll().get(0).getProductId();
-        repository.update(new Product(productId, updateName, Category.COFFEE_BEAN_PACKAGE, 2000L));
+        createProductDto.setProductName(updateName);
+        UpdateProductDto updateProductDto = new UpdateProductDto(
+                initInsertedId,
+                updateName,
+                createProductDto.getCategory(),
+                createProductDto.getPrice(),
+                createProductDto.getDescription());
+        repository.update(updateProductDto);
 
-        Optional<Product> product = repository.findById(productId);
+        Optional<Product> product = repository.findById(initInsertedId);
         assertAll(
                 () -> assertThat(product.isEmpty()).isFalse(),
                 () -> assertThat(product.get().getProductName()).isEqualTo(updateName)
         );
-    }
-
-    @Test
-    @DisplayName("상품을 전체 삭제한다.")
-    void testDeleteAll() {
-        repository.deleteAll();
-        List<Product> all = repository.findAll();
-
-        assertThat(all.isEmpty()).isTrue();
     }
 }

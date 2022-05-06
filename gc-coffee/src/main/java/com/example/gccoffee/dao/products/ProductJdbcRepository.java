@@ -1,11 +1,15 @@
-package com.example.gccoffee.dao;
+package com.example.gccoffee.dao.products;
 
+import com.example.gccoffee.dto.CreateProductDto;
+import com.example.gccoffee.dto.UpdateProductDto;
 import com.example.gccoffee.model.Category;
 import com.example.gccoffee.model.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -31,26 +35,30 @@ public class ProductJdbcRepository implements ProductRepository {
     }
 
     @Override
-    public Product insert(Product product) {
-        int update = jdbcTemplate.update("INSERT INTO products (product_name, category, price, description, created_at, updated_at)" +
-                " VALUES (:productName, :category, :price, :description, :createdAt, :updatedAt)", toParamMap(product));
+    public Long insert(CreateProductDto createProductDto) {
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        int update = jdbcTemplate.update(
+                "INSERT INTO products (product_name, category, price, description) VALUES (:productName, :category, :price, :description)",
+                createProductDto.toParameterSource(),
+                keyHolder,
+                new String[] {"product_id"}
+        );
         if (update != 1) {
             throw new RuntimeException(NO_INSERT.getMessage());
         }
-        return product;
+        return keyHolder.getKey().longValue();
     }
 
     @Override
-    public Product update(Product product) {
+    public void update(UpdateProductDto updateProductDto) {
         int update = jdbcTemplate.update(
-                "UPDATE products SET product_name = :productName, category = :category, price = :price, description = :description, created_at = :createdAt, updated_at = :updatedAt" +
+                "UPDATE products SET product_name = :productName, category = :category, price = :price, description = :description" +
                         " WHERE product_id = :productId",
-                toParamMap(product)
+                updateProductDto.toParamMap()
         );
         if (update != 1) {
             throw new RuntimeException(NO_UPDATE.getMessage());
         }
-        return product;
     }
 
     @Override
@@ -84,11 +92,6 @@ public class ProductJdbcRepository implements ProductRepository {
                 Collections.singletonMap("category", category.toString()),
                 productRowMapper
         );
-    }
-
-    @Override
-    public void deleteAll() {
-        jdbcTemplate.update("DELETE FROM products", Collections.emptyMap());
     }
 
     private static final RowMapper<Product> productRowMapper = ((resultSet, i) -> {

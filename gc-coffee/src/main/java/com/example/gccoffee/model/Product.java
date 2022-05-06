@@ -29,15 +29,6 @@ public class Product {
         this.updatedAt = updatedAt;
     }
 
-    public Product(Long productId, String productName, Category category, long price) {
-        this.productId = productId;
-        this.productName = productName;
-        this.category = category;
-        this.price = price;
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
-    }
-
     public Long getProductId() {
         return productId;
     }
@@ -46,32 +37,16 @@ public class Product {
         return productName;
     }
 
-    public void setProductName(String productName) {
-        this.productName = productName;
-    }
-
     public Category getCategory() {
         return category;
-    }
-
-    public void setCategory(Category category) {
-        this.category = category;
     }
 
     public long getPrice() {
         return price;
     }
 
-    public void setPrice(long price) {
-        this.price = price;
-    }
-
     public String getDescription() {
         return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -80,10 +55,6 @@ public class Product {
 
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
     }
 
     @Override
