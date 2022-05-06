@@ -4,8 +4,7 @@ import com.example.gccoffee.model.Category;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 
-import java.util.HashMap;
-import java.util.Map;
+import static com.example.gccoffee.dao.products.ProductsField.*;
 
 public class CreateProductDto {
     private String productName;
@@ -54,9 +53,9 @@ public class CreateProductDto {
 
     public SqlParameterSource toParameterSource() {
         return new MapSqlParameterSource()
-                .addValue("productName", this.productName)
-                .addValue("category", this.category.toString())
-                .addValue("price", this.price)
-                .addValue("description", this.description);
+                .addValue(PRODUCT_NAME.getCamel(), this.productName)
+                .addValue(CATEGORY.getCamel(), this.category.toString())
+                .addValue(PRICE.getCamel(), this.price)
+                .addValue(DESCRIPTION.getCamel(), this.description);
     }
 }

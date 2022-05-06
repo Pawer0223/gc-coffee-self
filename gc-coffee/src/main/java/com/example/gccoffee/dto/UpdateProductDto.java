@@ -7,6 +7,9 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.example.gccoffee.dao.products.ProductsField.*;
+import static com.example.gccoffee.dao.products.ProductsField.DESCRIPTION;
+
 public class UpdateProductDto {
     private Long productId;
     private String productName;
@@ -64,11 +67,11 @@ public class UpdateProductDto {
 
     public Map<String, Object> toParamMap() {
         HashMap<String, Object> paramMap = new HashMap<>();
-        paramMap.put("productId", this.productId);
-        paramMap.put("productName", this.productName);
-        paramMap.put("category", this.category.toString());
-        paramMap.put("price", this.price);
-        paramMap.put("description", this.description);
+        paramMap.put(PRODUCT_ID.getCamel(), this.productId);
+        paramMap.put(PRODUCT_NAME.getCamel(), this.productName);
+        paramMap.put(CATEGORY.getCamel(), this.category.toString());
+        paramMap.put(PRICE.getCamel(), this.price);
+        paramMap.put(DESCRIPTION.getCamel(), this.description);
         return paramMap;
     }
 

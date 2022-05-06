@@ -18,6 +18,8 @@ import java.util.*;
 import static com.example.gccoffee.JdbcUtils.*;
 import static com.example.gccoffee.dao.JdbcMessage.NO_INSERT;
 import static com.example.gccoffee.dao.JdbcMessage.NO_UPDATE;
+import static com.example.gccoffee.dao.products.ProductsField.*;
+
 
 @Repository
 public class ProductJdbcRepository implements ProductRepository {
@@ -41,7 +43,7 @@ public class ProductJdbcRepository implements ProductRepository {
                 "INSERT INTO products (product_name, category, price, description) VALUES (:productName, :category, :price, :description)",
                 createProductDto.toParameterSource(),
                 keyHolder,
-                new String[] {"product_id"}
+                new String[] {PRODUCT_ID.getSnake()}
         );
         if (update != 1) {
             throw new RuntimeException(NO_INSERT.getMessage());
@@ -66,7 +68,7 @@ public class ProductJdbcRepository implements ProductRepository {
         try {
             return Optional.of(
                     jdbcTemplate.queryForObject("SELECT * FROM products WHERE product_id = :productId",
-                            Collections.singletonMap("productId", productId), productRowMapper)
+                            Collections.singletonMap(PRODUCT_ID.getCamel(), productId), productRowMapper)
             );
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
@@ -78,7 +80,7 @@ public class ProductJdbcRepository implements ProductRepository {
         try {
             return Optional.of(
                     jdbcTemplate.queryForObject("SELECT * FROM products WHERE product_name = :productName",
-                            Collections.singletonMap("productName", productName), productRowMapper)
+                            Collections.singletonMap(PRODUCT_NAME.getCamel(), productName), productRowMapper)
             );
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
@@ -89,31 +91,31 @@ public class ProductJdbcRepository implements ProductRepository {
     public List<Product> findByCategory(Category category) {
         return jdbcTemplate.query(
                 "SELECT * FROM products WHERE category = :category",
-                Collections.singletonMap("category", category.toString()),
+                Collections.singletonMap(CATEGORY.getCamel(), category.toString()),
                 productRowMapper
         );
     }
 
     private static final RowMapper<Product> productRowMapper = ((resultSet, i) -> {
-        Long productId = resultSet.getLong("product_id");
-        String productName = resultSet.getString("product_name");
-        Category category = Category.valueOf(resultSet.getString("category"));
-        long price = resultSet.getLong("price");
-        String description = resultSet.getString("description");
-        LocalDateTime createdAt = toLocalDateTime(resultSet.getTimestamp("created_at"));
-        LocalDateTime updatedAt = toLocalDateTime(resultSet.getTimestamp("updated_at"));
+        Long productId = resultSet.getLong(PRODUCT_ID.getSnake());
+        String productName = resultSet.getString(PRODUCT_NAME.getSnake());
+        Category category = Category.valueOf(resultSet.getString(CATEGORY.getSnake()));
+        long price = resultSet.getLong(PRICE.getSnake());
+        String description = resultSet.getString(DESCRIPTION.getSnake());
+        LocalDateTime createdAt = toLocalDateTime(resultSet.getTimestamp(CREATED_AT.getSnake()));
+        LocalDateTime updatedAt = toLocalDateTime(resultSet.getTimestamp(UPDATED_AT.getSnake()));
         return new Product(productId, productName, category, price, description, createdAt, updatedAt);
     });
 
     private Map<String, Object> toParamMap(Product product) {
         HashMap<String, Object> paramMap = new HashMap<>();
-        paramMap.put("productId", product.getProductId());
-        paramMap.put("productName", product.getProductName());
-        paramMap.put("category", product.getCategory().toString());
-        paramMap.put("price", product.getPrice());
-        paramMap.put("description", product.getDescription());
-        paramMap.put("createdAt", product.getCreatedAt());
-        paramMap.put("updatedAt", product.getUpdatedAt());
+        paramMap.put(PRODUCT_ID.getCamel(), product.getProductId());
+        paramMap.put(PRODUCT_NAME.getCamel(), product.getProductName());
+        paramMap.put(CATEGORY.getCamel(), product.getCategory().toString());
+        paramMap.put(PRICE.getCamel(), product.getPrice());
+        paramMap.put(DESCRIPTION.getCamel(), product.getDescription());
+        paramMap.put(CREATED_AT.getCamel(), product.getCreatedAt());
+        paramMap.put(UPDATED_AT.getCamel(), product.getUpdatedAt());
         return paramMap;
     }
 }
