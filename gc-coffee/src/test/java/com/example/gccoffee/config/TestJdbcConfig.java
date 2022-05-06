@@ -1,4 +1,4 @@
-package com.example.gccoffee.dao;
+package com.example.gccoffee.config;
 
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.boot.jdbc.DataSourceBuilder;
