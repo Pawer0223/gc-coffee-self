@@ -1,5 +1,5 @@
 spring:
   datasource:
-    url: "jdbc:mysql://localhost:3306/order_mgmt"
+    url: "jdbc:mysql://localhost:3306/gc_coffee"
     username: "root"
     password: "0000"
