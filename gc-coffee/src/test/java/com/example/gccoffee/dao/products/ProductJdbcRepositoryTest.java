@@ -1,8 +1,6 @@
 package com.example.gccoffee.dao.products;
 
 import com.example.gccoffee.config.TestJdbcConfig;
-import com.example.gccoffee.dao.products.ProductJdbcRepository;
-import com.example.gccoffee.dao.products.ProductRepository;
 import com.example.gccoffee.dto.CreateProductDto;
 import com.example.gccoffee.dto.UpdateProductDto;
 import com.example.gccoffee.model.Category;
@@ -64,7 +62,7 @@ class ProductJdbcRepositoryTest {
     @Test
     @DisplayName("상품을 추가할 수 있다.")
     void testInsert() {
-        CreateProductDto createProductDto2 = new CreateProductDto( "new-product2", Category.COFFEE_BEAN_PACKAGE, 1000L, "DESC2");
+        CreateProductDto createProductDto2 = new CreateProductDto("new-product2", Category.COFFEE_BEAN_PACKAGE, 1000L, "DESC2");
         Long insertedId = repository.insert(createProductDto2);
 
         Optional<Product> product = repository.findById(insertedId);
@@ -76,7 +74,7 @@ class ProductJdbcRepositoryTest {
     void testFindAll() {
         for (int i = 1; i <= 5; i++) {
             String name = "new-product" + i;
-            CreateProductDto newProduct = new CreateProductDto( "new-product2", Category.COFFEE_BEAN_PACKAGE, 1000L, "DESC");
+            CreateProductDto newProduct = new CreateProductDto("new-product2", Category.COFFEE_BEAN_PACKAGE, 1000L, "DESC");
             repository.insert(newProduct);
         }
 
