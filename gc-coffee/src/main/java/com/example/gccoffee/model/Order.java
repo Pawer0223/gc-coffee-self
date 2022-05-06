@@ -4,7 +4,7 @@ import com.example.gccoffee.model.vo.Email;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
+import java.util.Objects;
 
 public class Order {
     private final Long orderId;
@@ -66,18 +66,16 @@ public class Order {
         return updatedAt;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
-        this.updatedAt = LocalDateTime.now();
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Order order = (Order) o;
+        return orderId.equals(order.orderId);
     }
 
-    public void setPostcode(String postcode) {
-        this.postcode = postcode;
-        this.updatedAt = LocalDateTime.now();
-    }
-
-    public void setOrderStatus(OrderStatus orderStatus) {
-        this.orderStatus = orderStatus;
-        this.updatedAt = LocalDateTime.now();
+    @Override
+    public int hashCode() {
+        return Objects.hash(orderId);
     }
 }
