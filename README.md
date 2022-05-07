@@ -26,6 +26,7 @@
     - `productId`
 
 ### createdAt, updatedAt의 Default 값 부여
+- 편의성
 - `created_at   datetime(6) DEFAULT NOW(6)`
 
 ### DTO 분리
@@ -39,6 +40,7 @@
 
 ### Entity 객체 개선
 - pk로 equals & hashCode 재정의
+  - 엔티티의 식별자는 바뀌지않고 고유하기 때문에 두 엔티티 객체의 식별자가 같으면 두 엔티티는 같다고 판단할 수 있다.
 
 ### 테스트코드 강화
 - 클론 프로젝트에서 `@SpringBootTest`로 Repository 테스트가 진행 됨.
@@ -46,6 +48,7 @@
   - `@SpringBootTest(classes = {TestJdbcConfig.class, ProductJdbcRepository.class})`
 
 - @Order로 수행되던 테스트 코드의 순서를 제거
+  - `Isolated`: 다른 테스트에 종속적인 테스트는 절대로 작성하지 않는다.
   - `@BeforeEach`와 `@Transactional`을 적용하여 개선
 
 - @RestController 테스트 코드 작성
