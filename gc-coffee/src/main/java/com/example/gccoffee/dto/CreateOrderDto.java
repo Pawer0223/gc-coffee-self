@@ -2,7 +2,6 @@ package com.example.gccoffee.dto;
 
 import com.example.gccoffee.model.OrderItem;
 import com.example.gccoffee.model.OrderStatus;
-import com.example.gccoffee.model.vo.Email;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 
@@ -11,23 +10,23 @@ import java.util.List;
 import static com.example.gccoffee.dao.orders.OrdersField.*;
 
 public class CreateOrderDto {
-    private Email email;
+    private String email;
     private String address;
     private String postcode;
     private List<OrderItem> orderItems;
 
-    public CreateOrderDto(Email email, String address, String postcode, List<OrderItem> orderItems) {
+    public CreateOrderDto(String email, String address, String postcode, List<OrderItem> orderItems) {
         this.email = email;
         this.address = address;
         this.postcode = postcode;
         this.orderItems = orderItems;
     }
 
-    public Email getEmail() {
+    public String getEmail() {
         return email;
     }
 
-    public void setEmail(Email email) {
+    public void setEmail(String email) {
         this.email = email;
     }
 
@@ -57,7 +56,7 @@ public class CreateOrderDto {
 
     public SqlParameterSource toParameterSource() {
         return new MapSqlParameterSource()
-                .addValue(EMAIL.getCamel(), this.email.getAddress())
+                .addValue(EMAIL.getCamel(), this.email)
                 .addValue(ADDRESS.getCamel(), this.address)
                 .addValue(POSTCODE.getCamel(), this.postcode)
                 .addValue(ORDER_ITEMS.getCamel(), this.orderItems)

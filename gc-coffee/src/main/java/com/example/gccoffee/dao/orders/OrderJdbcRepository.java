@@ -24,6 +24,12 @@ import static com.example.gccoffee.dao.products.ProductsField.UPDATED_AT;
 @Repository
 public class OrderJdbcRepository implements OrderRepository {
 
+    private final NamedParameterJdbcTemplate jdbcTemplate;
+
+    public OrderJdbcRepository(NamedParameterJdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
     private static final RowMapper<Order> productRowMapper = ((resultSet, i) -> {
         Long orderId = resultSet.getLong(ORDER_ID.getSnake());
         String email = resultSet.getString(EMAIL.getSnake());
@@ -35,28 +41,23 @@ public class OrderJdbcRepository implements OrderRepository {
         LocalDateTime updatedAt = toLocalDateTime(resultSet.getTimestamp(UPDATED_AT.getSnake()));
         return new Order(orderId, new Email(email), address, postcode, orderItems, orderStatus, createdAt, updatedAt);
     });
-    private final NamedParameterJdbcTemplate jdbcTemplate;
-
-    public OrderJdbcRepository(NamedParameterJdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
 
     @Override
     @Transactional
     public Long insert(CreateOrderDto createOrderDto) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        jdbcTemplate.update("INSERT INTO orders(email, address, postcode, order_status) " +
-                        "VALUES (:email, :address, :postcode, :orderStatus)",
+        jdbcTemplate.update("INSERT INTO orders(email, address, postcode, order_status) VALUES (:email, :address, :postcode, :orderStatus)",
                 createOrderDto.toParameterSource(),
                 keyHolder,
                 new String[]{ORDER_ID.getSnake()}
         );
         Long orderId = keyHolder.getKey().longValue();
         createOrderDto.getOrderItems()
-                .forEach(item ->
-                        jdbcTemplate.update("INSERT INTO order_items(order_id, product_id, price, quantity) " +
-                                        "VALUES (:orderId, :productId, :price, :quantity)",
-                                toOrderItemParamMap(orderId, item)));
+                .forEach(item -> jdbcTemplate.update(
+                        "INSERT INTO order_items(order_id, product_id, price, quantity) VALUES (:orderId, :productId, :price, :quantity)",
+                        toOrderItemParamMap(orderId, item)
+                        )
+                );
         return orderId;
     }
 

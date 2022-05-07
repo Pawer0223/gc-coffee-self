@@ -74,7 +74,7 @@ class OrderJdbcRepositoryTest {
 
     @AfterEach
     void clearAll() {
-        orderItems = new ArrayList<>();
+        orderItems.clear();
     }
 
     @Test
