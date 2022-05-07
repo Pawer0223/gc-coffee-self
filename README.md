@@ -37,6 +37,9 @@
 - `TO-BE`
   - View에 반환하는 Dto객체를 별도로 정의 함.
 
+### Entity 객체 개선
+- pk로 equals & hashCode 재정의
+
 ### 테스트코드 강화
 - 클론 프로젝트에서 `@SpringBootTest`로 Repository 테스트가 진행 됨.
   - 이 경우 테스트 진행 시 사용되지 않는 대상도 함께 로딩되기 때문에 필요한 객체만 생성될 수 있도록 개선
@@ -54,3 +57,5 @@
 - [DTO의 사용범위](https://tecoble.techcourse.co.kr/post/2021-04-25-dto-layer-scope/)
 - [SpringBootTest](https://meetup.toast.com/posts/124)
 - [Test 기본원칙](https://tech.buzzvil.com/handbook/test-principles/)
+- [MockMvc](https://astrid-dm.tistory.com/536)
+- [equals와 hashCode 사용하기](https://jojoldu.tistory.com/134)
